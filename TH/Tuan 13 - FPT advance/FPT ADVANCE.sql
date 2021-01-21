@@ -1,5 +1,7 @@
 ﻿CREATE DATABASE QLDANGKY
 USE QLDANGKY
+
+drop database FPT_Thi__2019
 CREATE TABLE NHACUNGCAP
 (
     MaNhaCC CHAR(15) PRIMARY KEY,
@@ -104,6 +106,23 @@ VALUES
     ('DK023', 'NCC002', 'DV01', 'Forte', 'MP03', '30/11/2017', '20/05/2018', 5),
     ('DK024', 'NCC003', 'DV03', 'Forte', 'MP04', '23/12/2017', '30/11/2019', 8),
     ('DK025', 'NCC003', 'DV03', 'Hiace', 'MP02', '24/08/2016', '25/10/2017', 1);
+-- câu 0: Hiện thông tin dòng xe với cursor
+declare @dongxe varchar(10), @hangxe varchar(10), @sochongoi int
+declare curcc cursor
+keyset
+for 
+	select * from DONGXE
+open curcc
+while 0=0
+	begin
+	fetch next from curcc into @dongxe, @hangxe,@sochongoi
+	if @@fetch_status<>0 break
+	print @dongxe+'   '+ @hangxe+ ' ' +convert(char(10),@sochongoi)
+end
+close curcc
+deallocate curcc
+
+
 -- Câu 1:	Thực hiện yêu cầu sau:						
 -- a)	Tạo một khung nhìn có tên là V_XeChoThue để thấy được thông tin của tất cả các dòng xe thuộc hãng Toyota						
 --	và đã từng được đăng ký cho thuê với ngày bắt đầu cung cấp trước 31/12/2016. (1 điểm)	
@@ -149,16 +168,28 @@ insert into DANGKYCUNGCAP values
 --	ký cung cấp phương tiện phải nhỏ hơn ngày 10 hàng tháng và nhỏ hơn ngày hiện tại". (1 điểm)						
 							
 --Câu 4:	Tạo 2 user function để thực hiện yêu cầu sau:						
---a)	Function func1: đếm tổng số dòng xe đã từng được đăng ký cho thuê với loại dịch vụ có tên là "Dịch vụ xe taxi". (1 điểm)		
-
+--a)	Function func1: đếm tổng số dòng xe đã từng được đăng ký cho thuê với loại dịch vụ 
+-- có tên là "Dịch vụ xe taxi". (1 điểm)		
+create or alter function func1 ()
+	RETURNS INT
+	AS 
+		BEGIN
+			DECLARE @TX INT = (select COUNT(DONGXE) from DANGKYCUNGCAP D
+								JOIN  LOAIDICHVU L ON D.MaLoaiDV = L.MaLoaiDV
+								WHERE TenLoaiDV = N'Dich vu xe taxi'
+								GROUP BY TenLoaiDV)
+			RETURN @TX
+		END
+SELECT dbo.func1()
 
 --b)	Functon func2: tính đơn giá (lấy từ cột DonGia trong bảng MUCPHI) cao nhất mà một dòng xe nào đó đã từng						
 --	được đăng ký cho thuê. Tên dòng xe được truyền vào như một tham số đầu vào của function này. (1 điểm)						
 							
---Câu 5:	Tạo Stored Procedure Sp_Xe tìm những dòng xe đã được các nhà cung cấp (bất kỳ) đăng ký cho thuê với						
+--Câu 5:	Tạo Stored Procedure Sp_Xe tìm những dòng xe đã được các nhà cung cấp (bất kỳ)
+-- đăng ký cho thuê với						
 --	loại hình dịch vụ là "Dịch vụ xe taxi" trong tháng 10/2015 để xóa thông tin về những dòng xe đó						
 --	(tức là phải xóa những bản ghi trong bảng DONGXE có liên quan)						
-
+create proc 
 --	và xóa những lần đăng ký cung cấp cho thuê xe liên quan đến dòng xe đó						
 --	(tức là phải xóa những bản ghi trong bảng DANGKYCUNGCAP có liên quan). (2 điểm) 						
 

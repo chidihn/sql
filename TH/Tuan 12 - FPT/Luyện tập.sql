@@ -21,7 +21,7 @@ order by MaNVChamSoc asc , MaNguoiNeoDon desc
 select * from tblNhanVienChamSoc nv
 join tblChiTietChamSoc ct on ct.MaNVChamSoc = nv.MaNVChamSoc
 join tblNguoiNeoDon n on n.MaNguoiNeoDon = ct.MaNguoiNeoDon
-where nv.SoDienThoai is not null and  n.GioiTinh = 'Nam'
+where nv.GioiTinh ='Nam' and  n.GioiTinh = 'Nam'
 -- Câu 5: Liệt kê họ tên những nhân viên chăm sóc đang có trong hệ thống.
 --Nếu họ tên trùng nhau thì chỉ hiện thị 1 lần. Học viên cần thực hiện yêu cầu này 
 --bằng 2 cách khác nhau (mỗi cách được tính 0,5 điểm). (1 điểm)
